@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class ConfirmDeleteFilePage extends AbstractPage {
 
+    private String BASE_URL = "https://github.com";
     @FindBy(id = "submit-file")
     private WebElement submitDeleteButton;
 
@@ -14,9 +15,10 @@ public class ConfirmDeleteFilePage extends AbstractPage {
 
     }
 
-    public ConfirmDeleteFilePage(WebDriver driver){
+    public ConfirmDeleteFilePage(WebDriver driver, String repositoryName, String username, String filename){
         super(driver);
         PageFactory.initElements(this.driver, this);
+        this.BASE_URL = BASE_URL + "/" + username + "/" + repositoryName + "/delete/master/" + filename;
     }
 
     public void confirmDeleting(){

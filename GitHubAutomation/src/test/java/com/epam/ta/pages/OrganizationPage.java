@@ -8,6 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class OrganizationPage extends AbstractPage {
 
+    private String BASE_URL = "https://github.com";
     @FindBy(xpath = "//nav[@class='orgnav']/a[2]")
     private WebElement peopleTab;
 
@@ -15,9 +16,10 @@ public class OrganizationPage extends AbstractPage {
 
     }
 
-    public OrganizationPage(WebDriver driver) {
+    public OrganizationPage(WebDriver driver, String organizationName) {
         super(driver);
         PageFactory.initElements(this.driver, this);
+        this.BASE_URL = BASE_URL + "/" + organizationName;
     }
 
     public void clickOnPeopleTab() {

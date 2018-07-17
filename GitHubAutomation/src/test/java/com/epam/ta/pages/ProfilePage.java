@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class ProfilePage extends AbstractPage {
 
+    private String BASE_URL = "https://github.com";
     @FindBy(xpath = "//h1[@class='vcard-names']/span[2]")
     private WebElement profileUsername;
 
@@ -18,10 +19,11 @@ public class ProfilePage extends AbstractPage {
 
     }
 
-    public ProfilePage(WebDriver driver) {
-
+    public ProfilePage(WebDriver driver, String username) {
         super(driver);
         PageFactory.initElements(this.driver, this);
+        this.BASE_URL = BASE_URL + "/" + username;
+
     }
 
     public String getProfileUsername() {

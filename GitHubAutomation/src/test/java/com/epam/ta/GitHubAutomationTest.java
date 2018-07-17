@@ -36,11 +36,11 @@ public class GitHubAutomationTest
 		Assert.assertTrue(steps.isLoggedIn(USERNAME));
 	}
 
-	//Добавление файла в репозиторий
+	//Добавление файла в репозиторий и удаление файла из репозитория
 	@Test
 	public void canAddFileToRepository(){
 		steps.loginGithub(USERNAME, PASSWORD);
-		steps.createNewRepositoryWithReadme("testRepoForAddFile", "auto-generated test repo");
+		steps.createNewRepositoryWithReadme("testRepoForAddFile", "auto-generated test repo", USERNAME);
 		steps.addFileToRepository("testRepoForAddFile","testFile", "Text",USERNAME);
 		Assert.assertTrue(steps.isTestFileExist("testRepoForAddFile","testFile", USERNAME),"File does not exist");
 		steps.deleteTestFile("testRepoForAddFile","testFile",USERNAME);
@@ -48,7 +48,7 @@ public class GitHubAutomationTest
 		steps.deleteRepository("testRepoForAddFile",USERNAME);
 	}
 
-	//Наличие у организации текущего аккаунта в списке
+	//Текущий аккуанут находится в списке у организации
 	@Test
 	public void checkOrganization(){
 		steps.loginGithub(USERNAME, PASSWORD);
@@ -71,9 +71,9 @@ public class GitHubAutomationTest
 	public void renameRepository(){
 		steps.loginGithub(USERNAME, PASSWORD);
 		Assert.assertTrue(steps.createNewRepository("testRepository2018", "auto-generated test repo"));
-		Assert.assertEquals("testRepository2018", steps.getCurrentRepositoryName());
+		Assert.assertEquals("testRepository2018", steps.getCurrentRepositoryName("testRepository2018", USERNAME));
 		steps.renameRepository("testRepository2018","renamedRepository2018",USERNAME);
-		Assert.assertEquals("renamedRepository2018", steps.getCurrentRepositoryName(),"Repository name hasn't been changed");
+		Assert.assertEquals("renamedRepository2018", steps.getCurrentRepositoryName("renamedRepository2018", USERNAME),"Repository name hasn't been changed");
 		steps.deleteRepository("renamedRepository2018", USERNAME);
 	}
 
@@ -82,5 +82,6 @@ public class GitHubAutomationTest
 	{
 		steps.closeDriver();
 	}
+
 
 }

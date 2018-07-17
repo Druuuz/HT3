@@ -35,22 +35,24 @@ public class Steps {
         return actualUsername.equals(username);
     }
 
-    public void createNewRepositoryWithReadme(String repositoryName, String repositoryDescription) {
+    //Create repository and put README.txt file there
+    public void createNewRepositoryWithReadme(String repositoryName, String repositoryDescription, String username) {
         MainPage mainPage = new MainPage(driver);
         mainPage.clickOnCreateNewRepositoryButton();
         CreateNewRepositoryPage createNewRepositoryPage = new CreateNewRepositoryPage(driver);
         createNewRepositoryPage.createNewRepository(repositoryName, repositoryDescription);
-        QuickSetupRepositoryPage quickSetupRepositoryPage = new QuickSetupRepositoryPage(driver);
+        QuickSetupRepositoryPage quickSetupRepositoryPage = new QuickSetupRepositoryPage(driver,repositoryName, username);
         quickSetupRepositoryPage.createREADME();
-        CreateNewFilePage createNewFilePage = new CreateNewFilePage(driver);
+        CreateNewFilePage createNewFilePage = new CreateNewFilePage(driver, repositoryName, username);
         createNewFilePage.addCurrentFile();
     }
 
-    public String getCurrentRepositoryName() {
-        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver);
+    public String getCurrentRepositoryName(String repositoryName, String username) {
+        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver,repositoryName, username);
         return openRepositoryPage.getRepositoryName();
     }
 
+    //Create empty repository
     public boolean createNewRepository(String repositoryName, String repositoryDescription) {
         MainPage mainPage = new MainPage(driver);
         mainPage.openPage();
@@ -60,6 +62,7 @@ public class Steps {
         return expectedRepoName.equals(createNewRepositoryPage.getCurrentRepositoryName());
     }
 
+    //Create repository by name + random string
     public boolean createNewRepositoryWithRandomName(String repositoryName, String repositoryDescription){
         MainPage mainPage = new MainPage(driver);
         mainPage.clickOnCreateNewRepositoryButton();
@@ -69,14 +72,12 @@ public class Steps {
     }
 
     public void deleteRepository(String repositoryName, String username) {
-        MainPage mainPage = new MainPage(driver);
-        mainPage.openPage();
-        mainPage.findRepositoryForReal(repositoryName, username);
-        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver);
+        findRepository(repositoryName, username);
+        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver,repositoryName, username);
         openRepositoryPage.openSettings();
-        RepositorySettingsPage repositorySettingsPage = new RepositorySettingsPage(driver);
+        RepositorySettingsPage repositorySettingsPage = new RepositorySettingsPage(driver, repositoryName, username);
         repositorySettingsPage.deleteRepository();
-        ConfirmDeleteRepositoryPage confirmDeleteRepositoryPage = new ConfirmDeleteRepositoryPage(driver);
+        ConfirmDeleteRepositoryPage confirmDeleteRepositoryPage = new ConfirmDeleteRepositoryPage(driver, repositoryName, username);
         confirmDeleteRepositoryPage.confirmDeletingByRepositoryName(repositoryName);
     }
 
@@ -87,23 +88,22 @@ public class Steps {
     }
 
     public void renameRepository(String repositoryName, String repositoryNewName, String username) {
-        MainPage mainPage = new MainPage(driver);
-        mainPage.openPage();
-        mainPage.findRepositoryForReal(repositoryName, username);
-        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver);
+        findRepository(repositoryName, username);
+        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver, repositoryName, username);
         openRepositoryPage.openSettings();
-        RepositorySettingsPage repositorySettingsPage = new RepositorySettingsPage(driver);
+        RepositorySettingsPage repositorySettingsPage = new RepositorySettingsPage(driver, repositoryName, username);
         repositorySettingsPage.renameRepository(repositoryNewName);
 
     }
 
+    //Open organization profile and check existing this account
     public boolean checkOrganization(String username) {
         Header header = new Header(driver);
         header.clickUserFunctions();
         header.clickYourProfile();
-        ProfilePage profilePage = new ProfilePage(driver);
+        ProfilePage profilePage = new ProfilePage(driver, username);
         profilePage.clickOnOrganization();
-        OrganizationPage organizationPage = new OrganizationPage(driver);
+        OrganizationPage organizationPage = new OrganizationPage(driver, driver.getCurrentUrl().split("/")[3]);
         organizationPage.clickOnPeopleTab();
         return organizationPage.isUserExist(username);
 
@@ -114,36 +114,38 @@ public class Steps {
         return createNewRepositoryPage.isCurrentRepositoryEmpty();
     }
 
+    //Add simple file to repository
     public void addFileToRepository(String repositoryName, String fileName, String text, String username) {
-        MainPage mainPage = new MainPage(driver);
-        mainPage.openPage();
-        mainPage.findRepositoryForReal(repositoryName, username);
-        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver);
+        findRepository(repositoryName, username);
+        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver,repositoryName, username);
         openRepositoryPage.clickCreateNewFile();
-        CreateNewFilePage createNewFilePage = new CreateNewFilePage(driver);
+        CreateNewFilePage createNewFilePage = new CreateNewFilePage(driver, repositoryName, username);
         createNewFilePage.addFileName(fileName);
         createNewFilePage.addTextLine(text);
         createNewFilePage.addCurrentFile();
     }
 
     public boolean isTestFileExist(String repositoryName, String fileName, String username) {
-        MainPage mainPage = new MainPage(driver);
-        mainPage.openPage();
-        mainPage.findRepositoryForReal(repositoryName, username);
-        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver);
+        findRepository(repositoryName, username);
+        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver, repositoryName, username);
         return openRepositoryPage.isFileExist(fileName);
     }
 
+    //Delete file from repository
     public void deleteTestFile(String repositoryName, String fileName, String username) {
+        findRepository(repositoryName, username);
+        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver, repositoryName, username);
+        openRepositoryPage.clickOnCreatedFile(fileName);
+        OpenFilePage openFilePage = new OpenFilePage(driver, repositoryName, username, fileName);
+        openFilePage.deleteFile();
+        ConfirmDeleteFilePage confirmDeleteFilePage = new ConfirmDeleteFilePage(driver, repositoryName, username, fileName);
+        confirmDeleteFilePage.confirmDeleting();
+    }
+
+    private void findRepository(String repositoryName, String username){
         MainPage mainPage = new MainPage(driver);
         mainPage.openPage();
         mainPage.findRepositoryForReal(repositoryName, username);
-        OpenRepositoryPage openRepositoryPage = new OpenRepositoryPage(driver);
-        openRepositoryPage.clickOnCreatedFile(fileName);
-        OpenFilePage openFilePage = new OpenFilePage(driver);
-        openFilePage.deleteFile();
-        ConfirmDeleteFilePage confirmDeleteFilePage = new ConfirmDeleteFilePage(driver);
-        confirmDeleteFilePage.confirmDeleting();
     }
 
 

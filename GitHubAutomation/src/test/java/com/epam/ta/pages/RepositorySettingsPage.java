@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 public class RepositorySettingsPage extends AbstractPage {
 
 
+    private String BASE_URL = "https://github.com";
     @FindBy(xpath = "//div[@class='Box Box--danger']/ul/li[4]/details/summary")
     private WebElement deleteRepositoryLink;
 
@@ -25,9 +26,10 @@ public class RepositorySettingsPage extends AbstractPage {
 
     }
 
-    public RepositorySettingsPage(WebDriver driver) {
+    public RepositorySettingsPage(WebDriver driver, String repositoryName, String username) {
         super(driver);
         PageFactory.initElements(this.driver, this);
+        this.BASE_URL = BASE_URL + "/" + username + "/" + repositoryName + "/settings";
     }
 
     public void deleteRepository() {

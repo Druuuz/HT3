@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class ConfirmDeleteRepositoryPage extends AbstractPage {
 
+    private String BASE_URL = "https://github.com";
     @FindBy(xpath = "//input[@aria-label='Type in the name of the repository to confirm that you want to delete this repository.']")
     private WebElement nameOfRepositoryField;
 
@@ -17,9 +18,10 @@ public class ConfirmDeleteRepositoryPage extends AbstractPage {
 
     }
 
-    public ConfirmDeleteRepositoryPage(WebDriver driver) {
+    public ConfirmDeleteRepositoryPage(WebDriver driver, String repositoryName, String username) {
         super(driver);
         PageFactory.initElements(this.driver, this);
+        this.BASE_URL = BASE_URL + "/" + username + "/" + repositoryName + "/settings";
     }
 
     private void setRepositoryName(String name) {

@@ -11,6 +11,7 @@ import java.util.List;
 public class OpenRepositoryPage extends AbstractPage {
 
 
+    private String BASE_URL = "https://github.com";
     @FindBy(xpath = "//form[@class='BtnGroup-form']/button")
     private WebElement createNewFileButton;
 
@@ -30,9 +31,10 @@ public class OpenRepositoryPage extends AbstractPage {
 
     }
 
-    public OpenRepositoryPage(WebDriver driver) {
+    public OpenRepositoryPage(WebDriver driver, String repositoryName, String username) {
         super(driver);
         PageFactory.initElements(this.driver, this);
+        this.BASE_URL = BASE_URL + "/" + username + "/" + repositoryName;
     }
 
     public String getRepositoryName() {
