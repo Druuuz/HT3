@@ -1,0 +1,19 @@
+# Java files
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+target/
+test-output/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Idea
+.idea/
+*.iml
+GitHubAutomation/target
